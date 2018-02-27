@@ -1,7 +1,9 @@
 #!/bin/bash
 
+me=$(basename "$0")
+
 command -v curl >/dev/null 2>&1 || command -v http >/dev/null 2>&1 || {
-	echo >&2 "I require curl or httpie but it's not installed. Install httpie with brew: 'brew install httpie'. Aborting."
+	echo >&2 "$me require cURL or HTTPie but none of them are installed. Aborting."
 	exit 1
 }
 
