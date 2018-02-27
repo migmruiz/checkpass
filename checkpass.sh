@@ -1,6 +1,14 @@
 #!/bin/bash
 
-command -v http >/dev/null 2>&1 || { echo >&2 "I require http but it's not installed. Install it with brew: 'brew install httpie'. Aborting."; exit 1; }
+command -v curl >/dev/null 2>&1 || command -v http >/dev/null 2>&1 || { echo >&2 "I require curl or httpie but it's not installed. Install httpie with brew: 'brew install httpie'. Aborting."; exit 1; }
+
+get() {
+	if command -v http 2>/dev/null; then
+		http GET "$@" --body
+	else
+		curl --silent "$@"
+	fi
+}
 
 read -sp 'Type the password you want to check: ' passvar
 echo
@@ -11,7 +19,7 @@ passvar=
 prefix=$(echo -n $hash | cut -c1-5)
 suffix=$(echo -n $hash | cut -c6-)
 
-breaches=$(http GET https://api.pwnedpasswords.com/range/$prefix --body | grep -i $suffix  | cut -c37- | tr -dc '0-9')
+breaches=$(get https://api.pwnedpasswords.com/range/$prefix | grep -i $suffix  | cut -c37- | tr -dc '0-9')
 
 printf "%d" $breaches
 
