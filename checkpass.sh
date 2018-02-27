@@ -10,23 +10,23 @@ get() {
 	fi
 }
 
-read -sp 'Type the password you want to check: ' passvar
+read -rsp 'Type the password you want to check: ' passvar
 echo
 
-hash=$(echo -n $passvar | openssl sha1)
+hash=$(echo -n "$passvar" | openssl sha1)
 passvar=
 
-prefix=$(echo -n $hash | cut -c1-5)
-suffix=$(echo -n $hash | cut -c6-)
+prefix=$(echo -n "$hash" | cut -c1-5)
+suffix=$(echo -n "$hash" | cut -c6-)
 
-breaches=$(get https://api.pwnedpasswords.com/range/$prefix | grep -i $suffix  | cut -c37- | tr -dc '0-9')
+breaches=$(get "https://api.pwnedpasswords.com/range/$prefix" | grep -i "$suffix"  | cut -c37- | tr -dc '0-9')
 
-printf "%d" $breaches
+printf "%d" "$breaches"
 
-if [ $breaches > "0" ]; then
-	printf " passwords breaches... :(\n"
+if [ ! -z "$breaches" ]; then
+	printf " passwords breaches... :(\\n"
 else
-	printf "\bNo passwords breaches! Congrats ;)\n"
+	printf "\\bNo passwords breaches! Congrats ;)\\n"
 fi
 
 exit 0
